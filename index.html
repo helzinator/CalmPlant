@@ -102,6 +102,7 @@ Persona #1, or the disorganized users, are unlikely to consistently check a mobi
 
     <h2 id="high-level-design" class="top">High Level Design</h2>
     <pre>To design our system, we will use an arduino board to control the main logic of the system. We will read the humidity of the soil of the plant by sticking a humidity sensor in the pot. The plant will have three states, “Healthy”, “Dry”, and “Very Dry”. We will have a LCD display to portray the state of the plant, from a smiley emoji when the plant is healthy (healthy state), to a neutral face emoji when it needs some water (dry state), to a sad face emoji when the plants needs a lot of water (very dry). Similarly, LEDS light will go from green, to yellow, to red, to display the three states of the plant. Lastly, we will have a button to let the user select between three types of plants. Each type of plant will set their respective humidity thresholds.
+        <img src="images/1.png" alt="Hardware requirements and setup" width="600">
 
 Figure 1: Hardware requirements and setup. On the left, the overall system. On the right, the Arduino connections with the other hardware
 
@@ -147,11 +148,13 @@ Agave
 Table 1: Three types of plants for the system
 
 For the software, we will build a simple state machine. In the main loop, we will check for the humidity value and update the state of the machine based on that. See figure 2 for the state machine diagram. Depending of the humidity value we read, we will update the LED lights and the LCD display.
+<img src="images/2.png" alt="State machine diagram of the software" width="600">
 
 Figure 2: State machine diagram of the software
 
 On Figure 3, you will see a high-level implementation of the main loop. We will poll for the humidity value and update the lights and display accordingly. On figure 3, you will also see a high-level implementation for the button. It will be an interrupt that switches the “type of plant” mode, as described on Table 1.
 
+<img src="images/2.png" alt="High-level implementation of the main loop and the OnButtonPress interrup" width="600">
 Figure 3: High-level implementation of the main loop and the OnButtonPress interrupt</pre>
 
     <h2 id="justifying-feasability" class="top">Justifying feasability</h2>
