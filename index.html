@@ -4,201 +4,621 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Calm Plant Watering Alert</title>
+  <meta name="description" content="Project notebook for Calm Plant Watering Alert (ECSE 424/524 HCI)">
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.6; margin: 0; }
-    nav { position: sticky; top: 0; background:#f7fafc; border-bottom:1px solid #e2e8f0; }
-    nav .wrap { display:flex; gap:.75rem; flex-wrap:wrap; padding:.75rem 1rem; max-width:1100px; margin:0 auto; }
-    nav a { text-decoration:none; color:#0a2540; padding:.35rem .6rem; border-radius:8px; }
-    nav a:hover { background:#e6fffa; }
-    main { max-width: 1100px; margin: 1.25rem auto; padding: 0 1rem; }
-    h1,h2 { margin-top: 2rem; }
-    .top { scroll-margin-top: 4.5rem; } /* so anchors aren't hidden under navbar */
-    pre { white-space: pre-wrap; }
-    .muted { color:#475569; font-size:.95rem; }
-    hr { border:0; border-top:1px solid #e2e8f0; margin:2rem 0; }
+    :root{
+      --ink:#0a2540;
+      --muted:#475569;
+      --glass1: rgba(255,255,255,.85);
+      --glass2: rgba(255,255,255,.65);
+      --accent1:#2aa3e6;
+      --accent2:#5cd7c2;
+      --ring:#dbeafe;
+      --edge:#e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+      line-height:1.6;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(123,212,248,.35), transparent),
+        radial-gradient(900px 500px at 110% 10%, rgba(92,215,194,.25), transparent),
+        linear-gradient(#eef9ff,#e9fbf7);
+      min-height:100vh;
+    }
+    /* Top glassy navbar */
+    nav{
+      position:sticky; top:0; z-index:20;
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.58));
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.7);
+      box-shadow: 0 8px 20px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .nav-wrap{ max-width:1100px; margin:0 auto; padding:.6rem 1rem; display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;}
+    .brand{ font-weight:700; letter-spacing:.2px; margin-right:.25rem; }
+    nav a{
+      text-decoration:none; color:var(--ink);
+      padding:.35rem .6rem; border-radius:10px;
+    }
+    nav a:hover{ background: rgba(123,212,248,.25); }
+    main{ max-width:1100px; margin:1.25rem auto; padding:0 1rem 3rem; }
+    .top{ scroll-margin-top:4.5rem; }
+    h1{
+      font-size: clamp(28px, 4vw, 44px);
+      margin:1rem 0 .5rem;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    h2{ margin-top:2rem; }
+    .muted{ color:var(--muted); }
+    hr{ border:0; border-top:1px solid var(--edge); margin:2rem 0; }
+
+    /* Glassy cards */
+    .aero{
+      background: linear-gradient(180deg, var(--glass1), var(--glass2));
+      border:1px solid rgba(255,255,255,.8);
+      border-radius:18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 28px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.75);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .aero img{
+      display:block; max-width:100%; height:auto;
+      border-radius:14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+      margin:.5rem 0;
+    }
+    pre{ white-space: pre-wrap; margin:0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+
+    /* Simple table-ish blocks */
+    .table{
+      border:1px solid var(--edge);
+      border-radius:12px; overflow:hidden;
+      background:#fff;
+    }
+    .table .row{ display:grid; grid-template-columns: 160px 1fr; gap:0; border-top:1px solid var(--edge); }
+    .table .row:first-child{ border-top:0; }
+    .table .cell{ padding:.75rem 1rem; }
+    .table .key{ background:#f8fafc; font-weight:600; }
+
+    /* Footer */
+    footer{ text-align:center; padding:2rem 0; color:var(--muted); }
+
+    /* Code-friendly links block inside pre content */
+    .link{ color:#0ea5e9; text-decoration:underline; }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR: uses the exact section titles you provided -->
+  <!-- NAV -->
   <nav>
-    <div class="wrap">
-      <a href="#calm-plant-watering-alert">Calm Plant Watering Alert</a>
+    <div class="nav-wrap">
+      <div class="brand">Calm Plant Watering Alert</div>
       <a href="#team-members">Team members</a>
       <a href="#user-observations">User Observations</a>
       <a href="#identifying-the-problem">Identifying the problem</a>
       <a href="#personas">Personas</a>
       <a href="#use-case-scenario">Use-case Scenario</a>
       <a href="#related-products">Related products</a>
-      <a href="#comparing-related-products-to-our-solution">Comparing Related Products to Our Solution</a>
+      <a href="#comparing">Comparing Related Products to Our Solution</a>
       <a href="#high-level-design">High Level Design</a>
-      <a href="#justifying-feasability">Justifying feasability</a>
-      <a href="#appendix-a-hci-ethics-table">Appendix A – HCI Ethics Table</a>
+      <a href="#low-fidelity-prototype">Low-Fidelity Prototype</a>
+      <a href="#usability-goals">Usability Goals</a>
+      <a href="#benchmark-tasks">Benchmark Tasks</a>
+      <a href="#test-materials">Test Materials</a>
+      <a href="#summary-results">Summary of Test Results</a>
+      <a href="#appendices">Appendices (A–E)</a>
     </div>
   </nav>
 
   <main>
-    <h1 id="calm-plant-watering-alert" class="top">Calm Plant Watering Alert</h1>
+    <h1 class="top" id="calm-plant-watering-alert">Calm Plant Watering Alert</h1>
 
-    <h2 id="team-members" class="top">Team members:</h2>
-    <pre>Camille Pouliot – 261114809
+    <!-- Team -->
+    <h2 class="top" id="team-members">Team members:</h2>
+    <div class="aero"><pre>Camille Pouliot – 261114809
 
 Émilia Gagné – 261119072
 
-Helena Clifford – 261104576</pre>
+Helena Clifford – 261104576</pre></div>
 
-    <h2 id="user-observations" class="top">User Observations</h2>
-    <p class="muted">ID #</p>
-    <pre>Observation
+    <!-- Observations -->
+    <h2 class="top" id="user-observations">User Observations</h2>
+    <div class="aero"><pre>ID #   Observation
 
-1. To decide if they are going to water their plant, user 1 dips their finger in the soil and estimates the plants’ humidity. If the soil is dry enough, they water the plant.
+1  To decide if they are going to water their plant, user 1 dips their finger in the soil and estimates
+   the plants’ humidity. If the soil is dry enough, they water the plant.
 
-2. To decide if they are going to water their plant, user 2 estimates the time between the last time they watered their plants and now. 2 weeks have passed since the last watering, so they decide that they should water their plants.
+2  To decide if they are going to water their plant, user 2 estimates the time between the last time
+   they watered their plants and now. 2 weeks have passed since the last watering, so they decide
+   that they should water their plants.
 
-3. To decide if they are going to water their plant, user 3 looks at their plant watering schedule and waters their plant when the schedule tells them to.
+3  To decide if they are going to water their plant, user 3 looks at their plant watering schedule and
+   waters their plant when the schedule tells them to.
 
-4. This user only waters their plant with leftover water from their glasses and water bottles.
+4  This user only waters their plant with leftover water from their glasses and water bottles.
 
-5. This user visually sees that their plant lacks water. They recognize that the soil is dry. They decide not to water their plants because they don’t have the motivation to do so.
+5  This user visually sees that their plant lacks water. They recognize that the soil is dry. They decide
+   not to water their plants because they don’t have the motivation to do so.
 
-6. This user waters their plants when their family and friends make comments on how dry the plants’ soil is.
+6  This user waters their plants when their family and friends make comments on how dry the plants’
+   soil is.
 
-7. This user forgot to water their plant so often that it is now almost dead, so they have lost hope that the plant will survive and simply wait until it dries out completely.</pre>
+7  This user forgot to water their plant so often that it is now almost dead, so they have lost hope that
+   the plant will survive and simply wait until it dries out completely.</pre></div>
 
-    <h2 id="identifying-the-problem" class="top">Identifying the problem</h2>
-    <pre>Most of the users estimate whether their plants need water. None of them knows for sure if their plant is really in need of water. User #1 has to dirty their fingers by sticking them into dirt to check the soil humidity. Their estimation could be wrong because they are only checking the surface level soil. User #2 waters their plant when they estimate that enough time has passed. But some plants require watering every day, while some can go a month without water and die easily from being overwatered. This behavior could lead to wrong assumptions since every plant has different needs. User #4 only uses leftover water, which means that if there is not a lot of excess water around, they could be under-watering their plant and killing it. User 3 has taken into account all of the factors to know when to water their plants, but they end up having to keep track of a calendar and update it over time. Our proposed system could tell them when to water their plant by knowing exactly the appropriate humidity level for their plant.
+    <!-- Problem -->
+    <h2 class="top" id="identifying-the-problem">Identifying the problem</h2>
+    <div class="aero"><pre>Most of the users estimate whether their plants need water. None of them knows for sure if their plant is
+really in need of water. User #1 has to dirty their fingers by sticking them into dirt to check the soil humidity.
+Their estimation could be wrong because they are only checking the surface level soil. User #2 waters their
+plant when they estimate that enough time has passed. But some plants require watering every day, while
+some can go a month without water and die easily from being overwatered. This behavior could lead to wrong
+assumptions since every plant has different needs. User #4 only uses leftover water, which means that if there
+is not a lot of excess water around, they could be under-watering their plant and killing it. User 3 has taken
+into account all of the factors to know when to water their plants, but they end up having to keep track of a
+calendar and update it over time. Our proposed system could tell them when to water their plant by knowing
+exactly the appropriate humidity level for their plant.
 
-Another issue we have seen with the users is that even when they know their plants require water, they sometimes lack the motivation to water them. There is no immediate positive feedback once they water their plants, and they don’t seem to care about watering their plants.</pre>
+Another issue we have seen with the users is that even when they know their plants require water, they
+sometimes lack the motivation to water them. There is no immediate positive feedback once they water their
+plants, and they don’t seem to care about watering their plants.
 
-    <h2 id="personas" class="top">Personas</h2>
-    <pre>Persona #1: Disorganized: This persona only waters their plant when they think about it or when the occasion to water their plant presents itself. This groups the behaviours seen in user 2, 4 and 6. These users don’t have regular patterns in their watering schedules, and instead rely on remembering periodically that they need to water their plant, or someone else reminding them.
+Video of a user:
+20251001_181312.mp4</pre></div>
 
-Persona #2: Structured: This persona knows when they have to water their plant. They rely on a self-made mechanism, but it requires them to check it often. This groups the behaviours seen in user 1 and 3. Those users were grouped because they water their plants on a regular basis and regularly check up on their plants to keep them healthy.
+    <!-- Personas -->
+    <h2 class="top" id="personas">Personas</h2>
+    <div class="aero"><pre>Persona #1: Disorganized
+This persona only waters their plant when they think about it or when the occasion to water their plant
+presents itself. This groups the behaviours seen in user 2, 4 and 6. These users don’t have regular
+patterns in their watering schedules, and instead rely on remembering periodically that they need to water
+their plant, or someone else reminding them.
 
-Persona #3: Unmotivated: This persona generally feels unmotivated to take care of their plant and often gives up on their plant once it looks unhealthy. This groups the behaviours seen in user 5 and 7. Those users were grouped because they don’t take care of their plant until it is too late to revive it, and then give up on that plant.</pre>
+Persona #2: Structured
+This persona knows when they have to water their plant. They rely on a self-made mechanism, but it
+requires them to check it often. This groups the behaviours seen in user 1 and 3. Those users were grouped
+because they water their plants on a regular basis and regularly check up on their plants to keep them
+healthy.
 
-    <h2 id="use-case-scenario" class="top">Use-case Scenario</h2>
-    <pre>For this use case, we will illustrate how our product could help someone with the disorganized persona
+Persona #3: Unmotivated
+This persona generally feels unmotivated to take care of their plant and often gives up on their plant once
+it looks unhealthy. This groups the behaviours seen in user 5 and 7. Those users were grouped because
+they don’t take care of their plant until it is too late to revive it, and then give up on that plant.</pre></div>
 
-Our user is moving through their apartment. Before, they weren’t paying attention to their plant, but now they can see when they need to water their plant. They are used to seeing a green LED sensor, as they pay attention to it in their peripheral vision. The next time they pass through, the light has turned yellow, and this draws their attention. They find their closest water source, a glass of water and pour the water in. The sensors stay yellow, so they go fetch more water with their glass, and the sensor turns green again.</pre>
+    <!-- Use-case -->
+    <h2 class="top" id="use-case-scenario">Use-case Scenario</h2>
+    <div class="aero"><pre>For this use case, we will illustrate how our product could help someone with the disorganized persona.
 
-    <h2 id="related-products" class="top">Related products</h2>
-    <pre>Parrot Flower Power
+Our user is moving through their apartment. Before, they weren’t paying attention to their plant, but now
+they can see when they need to water their plant. They are used to seeing a green LED sensor, as they pay
+attention to it in their peripheral vision. The next time they pass through, the light has turned yellow, and this
+draws their attention. They find their closest water source, a glass of water and pour the water in. The sensors
+stay yellow, so they go fetch more water with their glass, and the sensor turns green again.</pre></div>
 
-This is a device that has a sensor device that is directly pressed into the soil. It is good because it has a very accurate read on the humidity, moisture and air quality, but it is quite expensive at 80$+. Another downside is that the device is connected to a mobile app. Without checking the app, the user is not able to know whether they should water their plant.
+    <!-- Related products -->
+    <h2 class="top" id="related-products">Related products</h2>
+    <div class="aero"><pre>Parrot Flower Power
+This is a device that has a sensor device that is directly pressed into the soil. It is good because it has a very
+accurate read on the humidity, moisture and air quality, but it is quite expensive at 80$+. Another downside
+is that the device is connected to a mobile app. Without checking the app, the user is not able to know
+whether they should water their plant.
 
 Flower Care Sensor
-
-This one has a slightly different design than the one above and does provide less data to the user, but it does come at a lower cost. However, the same issue arises- the product is only useful when checking the associated app.
+This one has a slightly different design than the one above and does provide less data to the user, but it does
+come at a lower cost. However, the same issue arises- the product is only useful when checking the associated
+app.
 
 Amazon Humidity Plant Monitor
+A basic plant monitor that can be found on Amazon will provide the user with a small humidity scale indicating
+if the plant needs to be watered. These are affordable, between 15 and 20 dollars, but they are difficult to read.</pre></div>
 
-A basic plant monitor that can be found on Amazon will provide the user with a small humidity scale indicating if the plant needs to be watered. These are affordable, between 15 and 20 dollars, but they are difficult to read.</pre>
+    <!-- Comparing -->
+    <h2 class="top" id="comparing">Comparing Related Products to Our Solution</h2>
+    <div class="aero"><pre>Our plant monitor does not have a mobile app associated. Having the barrier of checking an app makes it more
+likely that the user will forget to water their plant. It is only half a product. For our product however, the
+feedback that the user must water their plan will be directly indicated on the device. Having a LED monitor
+would make it much more apparent to the user if the plant needs to be watered.
 
-    <h2 id="comparing-related-products-to-our-solution" class="top">Comparing Related Products to Our Solution</h2>
-    <pre>Our plant monitor does not have a mobile app associated. Having the barrier of checking an app makes it more likely that the user will forget to water their plant. It is only half a product. For our product however, the feedback that the user must water their plan will be directly indicated on the device. Having a LED monitor would make it much more apparent to the user if the plant needs to be watered.
+Persona #1, or the disorganized users, are unlikely to consistently check a mobile app or small humidity gauge,
+meaning they may still forget to water their plants with competing products. Structured users, as in Persona #2,
+who already rely on routines or schedules, might find existing app-based solutions useful, but they still require
+extra steps that reduce efficiency. Finally, Persona #3d the unmotivated users, are the least likely to open an app
+or interpret subtle indicators, so they especially benefit from our design’s immediate, visible feedback through
+LEDs and simple emojis. By directly integrating feedback into the user’s environment, our solution addresses the
+needs of all three personas more effectively than current market options</pre></div>
 
-Persona #1, or the disorganized users, are unlikely to consistently check a mobile app or small humidity gauge, meaning they may still forget to water their plants with competing products. Structured users, as in Persona #2, who already rely on routines or schedules, might find existing app-based solutions useful, but they still require extra steps that reduce efficiency. Finally, Persona #3d the unmotivated users, are the least likely to open an app or interpret subtle indicators, so they especially benefit from our design’s immediate, visible feedback through LEDs and simple emojis. By directly integrating feedback into the user’s environment, our solution addresses the needs of all three personas more effectively than current market options </pre>
+    <!-- High Level Design -->
+    <h2 class="top" id="high-level-design">High Level Design</h2>
+    <div class="aero">
+      <pre>To design our system, we will use an arduino board to control the main logic of the system. We will read the
+humidity of the soil of the plant by sticking a humidity sensor in the pot. The plant will have three states,
+“Healthy”, “Dry”, and “Very Dry”. We will have a LCD display to portray the state of the plant, from a smiley
+emoji when the plant is healthy (healthy state), to a neutral face emoji when it needs some water (dry state),
+to a sad face emoji when the plants needs a lot of water (very dry). Similarly, LEDS light will go from green,
+to yellow, to red, to display the three states of the plant. Lastly, we will have a button to let the user select
+between three types of plants. Each type of plant will set their respective humidity thresholds.</pre>
+      <img src="images/1.png" alt="Hardware requirements and setup" />
+      <pre>Figure 1: Hardware requirements and setup. On the left, the overall system. On the right, the Arduino
+connections with the other hardware.
 
-    <h2 id="high-level-design" class="top">High Level Design</h2>
-    <pre>To design our system, we will use an arduino board to control the main logic of the system. We will read the humidity of the soil of the plant by sticking a humidity sensor in the pot. The plant will have three states, “Healthy”, “Dry”, and “Very Dry”. We will have a LCD display to portray the state of the plant, from a smiley emoji when the plant is healthy (healthy state), to a neutral face emoji when it needs some water (dry state), to a sad face emoji when the plants needs a lot of water (very dry). Similarly, LEDS light will go from green, to yellow, to red, to display the three states of the plant. Lastly, we will have a button to let the user select between three types of plants. Each type of plant will set their respective humidity thresholds.
-        <img src="images/1.png" alt="Hardware requirements and setup" width="600">
+We will provide a guide to the user to help them figure out which mode is best for their plants. Below are the
+three plants types we will be using:
 
-Figure 1: Hardware requirements and setup. On the left, the overall system. On the right, the Arduino connections with the other hardware
+Plant type    Description                         Example
+Hydrophytes   High water needs / Water loving     • Ferns (e.g., Boston Fern, Bird's Nest Fern)
+                                                  • Alocasia (Elephant Ear)
+                                                  • Calathea
 
-We will provide a guide to the user to help them figure out which mode is best for their plants. Below are the three plants types we will be using:
+Mesophytes    Moderate needs / Average conditions • Pothos (Epipremnum aureum)
+                                                  • Spider Plant (Chlorophytum comosum)
+                                                  • Peace Lily (Spathiphyllum)
+                                                  • Rubber Plant (Ficus elastica)
+                                                  • Philodendron (most varieties)
+                                                  • Dracaena (e.g., Dragon Tree)
+                                                  • Prayer Plant (Maranta leuconeura)
 
-Plant type
+Xerophytes    Low Water Needs / Drought tolerant  • Cactus
+                                                  • Succulents (e.g., Jade Plant - Crassula ovata, Aloe Vera, Echeveria,
+                                                    Haworthia, Kalanchoe)
+                                                  • Snake Plant
+                                                  • ZZ Plant (Zamioculcas zamiifolia)
+                                                  • Ponytail Palm (Beaucarnea recurvata)
+                                                  • Agave
 
-Description
+For the software, we will build a simple state machine. In the main loop, we will check for the humidity value and
+update the state of the machine based on that. See figure 2 for the state machine diagram. Depending of the
+humidity value we read, we will update the LED lights and the LCD display.</pre>
+      <img src="images/2.png" alt="State machine diagram of the software" />
+      <pre>Figure 2: State machine diagram of the software.
 
-Example
+On Figure 3, you will see a high-level implementation of the main loop. We will poll for the humidity value and
+update the lights and display accordingly. On figure 3, you will also see a high-level implementation for the button.
+It will be an interrupt that switches the “type of plant” mode, as described on Table 1.</pre>
+      <img src="images/2.png" alt="High-level implementation of the main loop and the OnButtonPress interrupt" />
+      <pre>Figure 3: High-level implementation of the main loop and the OnButtonPress interrupt.</pre>
+    </div>
 
-Hydrophytes
+    <!-- LOW-FI PROTOTYPE (before appendices) -->
+    <h2 class="top" id="low-fidelity-prototype">Low-Fidelity Prototype</h2>
+    <div class="aero">
+<pre>Section 1: Design Concepts:
 
-High water needs / Water loving
+Idea #1 : LCD screen
+The user checks this lcd screen to know if they have to water their plant
 
-Ferns (e.g., Boston Fern, Bird's Nest Fern) -
-Alocasia (Elephant Ear)
-Calathea
+Idea #2 : LED flower
+LED in 3D printed flower stuck to the pot. Green for good, yellow for ok and red for bad
 
-Mesophytes
+Idea #3: Mechanical flower
+As the soil gets dryer the flower closes.
 
-Moderate needs / Average conditions
+Idea #4: Extending flower
+The length of the flower varies depending on the soil. Fully out means good and fully in means bad
 
-Pothos (Epipremnum aureum)
-Spider Plant (Chlorophytum comosum)
-Peace Lily (Spathiphyllum)
-Rubber Plant (Ficus elastica)
-Philodendron (most varieties)
-Dracaena (e.g., Dragon Tree)
-Prayer Plant (Maranta leuconeura)
+Idea #5: Spinning flower
+The spinning speed varies depending on the soil. Not spinning means good and spinning fast means bad.
 
-Xerophytes
+Idea #6: Proximity beeping
+Will beep if bad and the proximity sensor is triggered
 
-Low Water Needs / Drought tolerant
+Idea #7: Digital Hourglass
+A digital hourglass that tracks the time until the plant needs to be watered next based on humidity levels
+in the pot and time estimation of the evaporation.
 
-Cactus
-Succulents (e.g., Jade Plant - Crassula ovata, Aloe Vera, Echeveria, Haworthia, Kalanchoe)
-Snake Plant
-ZZ Plant (Zamioculcas zamiifolia)
-Ponytail Palm (Beaucarnea recurvata)
-Agave
+Idea #8:
+Plays music if the plant needs water
+- Over watered: Titanic theme song
+- Needs water: A cowboy theme music reminiscent of the deserts of the far west.
 
-Table 1: Three types of plants for the system
+Phase 2 – Ideas to prototype
 
-For the software, we will build a simple state machine. In the main loop, we will check for the humidity value and update the state of the machine based on that. See figure 2 for the state machine diagram. Depending of the humidity value we read, we will update the LED lights and the LCD display.
-<img src="images/2.png" alt="State machine diagram of the software" width="600">
+Idea #1
+For this idea it was decided to combine the lcd idea with the led idea to create a polyvalent system that
+yields basic information from afar and detailed feedback when close by.
 
-Figure 2: State machine diagram of the software
+The led will represent the state of the plant for afar and the screen will do the same thing when close but
+also allow the user to have more detailed information on the plant and navigate the menu with a joystick.
+All of this will be stuck on the pot of the plant.
 
-On Figure 3, you will see a high-level implementation of the main loop. We will poll for the humidity value and update the lights and display accordingly. On figure 3, you will also see a high-level implementation for the button. It will be an interrupt that switches the “type of plant” mode, as described on Table 1.
+Idea #2
+For this idea we reused the spinning flower and a bit of the extending prototype for its height to yield
+information from afar.
 
-<img src="images/2.png" alt="High-level implementation of the main loop and the OnButtonPress interrup" width="600">
-Figure 3: High-level implementation of the main loop and the OnButtonPress interrupt</pre>
+The speed of the fan is influenced by soil and a num pad allows for basic mode navigation. The fan is to be
+put on the edge of the pot.</pre>
+    </div>
 
-    <h2 id="justifying-feasability" class="top">Justifying feasability</h2>
-    <pre>Our project has three main components. We need to do the hardware setup, the code for the main loop, and the code for the interrupt.  For the hardware setup, as seen on Figure 1, our team will have to connect the LCD display and the LED lights to the arduino while they are fixed to be around the potted plant. We will need to have a flexible design such that the setup can work for different sizes of potted plants. We were thinking of having a breadboard with a 3D printed casing that is mounted on an elastic that wraps itself around the pot. We want the LEDS to be fixed on the breadboard. We are estimating around 20 hours of work for this, since we will need to create the CADing and make different adjustement to the design. Our team lacks CADing skills, so a lot of time will be spent on learning how to do that. Émilia has extensive knowledge on the I/O pins for arduino and can very easily do the required connections for the hardware button, sensor, and LCD display. Having a stable structure to wrap around the pots will be a challenge, so that increased our time estimate.
+    <!-- Usability Goals -->
+    <h2 class="top" id="usability-goals">Usability Goals</h2>
+    <div class="aero"><pre>A convincing rationale is offered for the described usability goals; the benchmark tasks are appropriate for
+these goals, relate to the most important elements of system functionality, and only tell the user what (and not
+how) to do.
 
-In terms of software, multiple elements need to be implemented. First, we need to display the three states of the plant on the LCD display. We want to iterate over our design, but currently, we settled on using an emoji to display the plant’s state. We expect around 5 hrs to code the display and explore different UI options. Camille has previous knowledge with LCD displays, so she will be able to code it. We will also need to code a function to change the color of the RGB LEDs, which will require another hour or so. Émilia has worked with RGB LEDs before, so she has the knowledge to do this. We will need to implement function to correctly read the humidity sensor reading and map that to the three groups of plant’s need to find the correct threshold. Coding the humidity sensor reading and mapping them to their appropriate state depending on the plant will take around 5 hours. Helena will be in charge of this because of her expertise in botanicals. We will need to implement a state machine for the plant, such that depending on the state of the plant, we update the user’s feedback through the LEDs and the display. That will take around 2 hrs. Finally, we need to implement the interrupt for the button, and the associated UI display when changing the type of plant by pressing the button. Camille will be in charge of this because of her previous knowlede in interrupts. She will spend an estimated 5 hours on this.
+Users should be able to complete the installation process of the device in under 15 minutes.
+Rational: The design should be minimalist to reduce the cognitive load. The device should be easy to install
+to improve usability and satisfaction with the product.
 
-Finally, Helena will be in charge of collecting user experience such that we can improve our design throughout each phases of the design. We expect 30 hours to be spent between the team members in creating user questionnaire, collecting user data and iterating over the design to better fit user’s needs. Adding everything up, we should spend between 60-70 hours on this project total, split across our 3 team members.</pre>
+Users should clearly be able to view the status of the plant at a glance from a maximal distance of 5 meters.
+Rational: The main goal of the device is to inform the user of the state of the plant by impowering their
+peripheral information. Users are usually seeing the potted plants when they are inside their home, so a distance
+of 5 meters is reasonable. Also, based on the 10 heuristic goals, users should always be able to see what is
+going on with the system through appropriate feedback within a reasonable amount of time.
 
-    <h2 id="appendix-a-hci-ethics-table" class="top">Appendix A – HCI Ethics Table</h2>
-    <pre>Calm Plant Watering Alert
+The system should give feedback to the user on the state of the plant’s soil after it has been watered, with a
+maximum delay of 1 minute.
+Rational: It is important for the user to have feedback on their action of watering the plant. The system should
+let the user know if they made an error while performing the action, such as watering too much or too little.</pre></div>
+
+    <!-- Benchmark Tasks -->
+    <h2 class="top" id="benchmark-tasks">Benchmark Tasks</h2>
+    <div class="aero">
+      <div class="table">
+        <div class="row">
+          <div class="cell key">Section 1</div><div class="cell">Setting up the device</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 1</div><div class="cell">Setup the device on your potted plant.</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 2</div><div class="cell">Select the appropriate device mode for your type of plant.</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Section 2</div><div class="cell">Viewing the plant status</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 3</div><div class="cell">Determine the current water needs of the plant.</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 4</div><div class="cell">Decide if you would water the plant or not.</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Section 3</div><div class="cell">Watering the plant</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 5</div><div class="cell">Water the plant based on its water needs</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 6</div><div class="cell">Determine the current state of the plant</div>
+        </div>
+        <div class="row">
+          <div class="cell key">Task 7</div><div class="cell">Decide if you would water the plant more or not.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Materials -->
+    <h2 class="top" id="test-materials">Test Materials</h2>
+    <div class="aero"><pre>5.1: Observer Briefing:
+The observer will first introduce the context of the test to the end user based on the information found in
+section 5.2. Then, the end-user, also called the evaluator, shall fill out the pretest questionnaire found in
+section 5.3. Then, the observer should start the recording of the user test. They shall give the user the test
+script found in section 5.6. The observer shall record what happens during the evaluation in the appropriate
+data collection sheet, which can be found in the section 5.7. They should not interact with the user, and let
+the user make their own decisions. If the user is stuck an cannot proceed with the task, then they can guide
+them to proceed with the test and record this in the datasheet in the comment section. Once the user is done
+with all the tasks, they should stop the recording and hand the user the post-questionnaire which can be found
+in section 5.8.
+
+5.2: User Introduction:
+Hi and thank you for taking part in this short usability test. The goal today is to see how intuitive and practical
+our “Calm Plant Watering Alert” system feels when you’re using it for the first time. This isn’t a test of you or
+your abilities, it’s a test of our design, so please don’t worry about doing everything ‘perfectly’.
+
+We will ask you to interact with a low-fidelity paper prototype that represents the basic layout and functions of
+our product. As you go through the tasks, please try to think out loud. Share what you notice, what confuses
+you, or what feels natural. Your honest reactions will help us understand what’s working and what we could
+improve in the next version.
+
+If at any point you feel uncomfortable or unsure, you can pause or stop the test. The session should take
+about 10-15 minutes. Thank you again for helping us!
+
+5.3: Pretest Questionnaire:
+(questions as listed in the Low-Fidelity Prototype document)
+
+5.4: User/Training Documentation:
+The documentation that will be presented to the user is the pre-test questionnaire in 5.3, the test script in 5.6
+in an electrical format, the post-test questionnaire found in 5.8, and the two paper prototypes presented in
+section 2. There is no additional documentation.
+
+5.5: Tasks Description:
+(identical tasks 1–7 as summarized in Benchmark Tasks)
+
+5.6: Test Script:
+1. Setup the device on your potted plant.
+2. Select the appropriate device mode for your type of plant.
+3. Determine the current water needs of the plant. State your finding out loud.
+4. Decide if you want to water the plant or not. State your decision out loud and explain your rationale.
+5. Water the plant based on its water needs.
+6. Determine the current state of the plant. State your finding out loud.
+7. Decide if you want to water the plant or not. State your decision out loud and explain your rationale.
+
+5.7: Data Collection Sheet:
+Participant Name:
+Date:
+Observer:
+Task #, Task Description, Completed, Errors made, Time to complete, Notes
+
+5.8: Post-Test Questionnaire:
+(questions 1–7 as listed in the Low-Fidelity Prototype document)</pre></div>
+
+    <!-- Summary of Test Results -->
+    <h2 class="top" id="summary-results">Summary of Test Results</h2>
+    <div class="aero"><pre>Results Table
+
+Prototype: 1-LED + joystick — Participant: Natalie Ruest
+Setup: Quick and intuitive
+Interface Experience: Found joystick confusing and unclear how to select a mode.
+Feedback: LED color system was clear and easy to interpret from a distance
+Likes: Simple design and family friendly
+Comments: Replace joysticks with more intuitive control like buttons.
+
+Prototype: 1-LED + joystick — Participant: Mathias Gagne
+Setup: Very easy to understand
+Interface Experience: Did not know if they had to press on the joystick to select the mode
+Feedback: Found the status of the plant too wordy.
+Likes: They like the LED reminders
+Comments: N/A
+
+Prototype: 2. Spinning flower — Participant: Sofija Kuzmanovic
+Setup: Put too close to center of plant the first time
+Interface Experience: Found height effect to be natural
+Feedback: Does the plant update automatically after watering?
+Likes: Enjoyed immediate feedback as she could see what is happening
+Comments: Add real-time feedback after watering. Clarify meaning indicators.
+Short video of interview: https://youtube.com/shorts/xvZ8LhTpyzY?si=r3dLSLKtrZCEYLVr
+
+Prototype: 2- Spinning flower — Participant: Dawn Hoffer
+Setup: Understood the flow right away
+Interface Experience: Confused about what to click
+Feedback: Wanted more context beyond watering (Sunlight, overwatering)
+Likes: Appreciated simplicity, said anyone could do it.
+Comments: Expand for sunlight and overwatering
+
+Observations Table
+
+General Success
+All participants completed every task successfully. Setup was universally described as quick and easy. LED color
+cues were intuitive and effective, whereas height was also a simple indicator.
+
+Main Usability Challenges
+The joysticks caused confusion, especially with mode selection. Participants using the numpad were unclear of what
+the buttons did each time.
+
+Prototype Comparison
+The simple to see height difference allowed the users to see from a distance whether the plant needed to be watered.
+However, users still valued LED system for its clear visual cues from peripheral vision.
+
+User Preferences
+Participants preferred systems that feel calm, minimal and easy to read at a glance. The combination of LED indicators
+for peripheral awareness as well as the large height indicator allowed users to understand clearly what is going on.
+
+Next Steps
+Combine the LED indicator’s clarity with the touchscreen’s interactivity. Simplify mode selection of numbad and
+ensure immediate, visible feedback after watering. Consider expanding functionality to address overwatering and
+sunlight exposure.</pre></div>
+
+    <!-- Appendices (merged together at the end) -->
+    <h2 class="top" id="appendices">Appendices (A–E)</h2>
+
+    <div class="aero">
+      <h3>Appendix A – HCI Ethics Table</h3>
+<pre>Calm Plant Watering Alert
 
 Team members:
-
 Camille Pouliot – 261114809
 Emilia Gagne – 261119072
 Helena Clifford – 261104576
 
 Study Description
-
-This study's goal is to test a low-fidelity prototype of a system that will tell you when to water your plants. The user will receive inputs from the status voyant and then decide how to act based on it. The user will also test how to set up the system.
+This study's goal is to test a low-fidelity prototype of a system that will tell you when to water your plants.
+The user will receive inputs from the status voyant and then decide how to act based on it. The user will also test
+how to set up the system.
 
 Participants
-
 Number: 5-10
 Age: Any
 Gender: Any
 Requirements: Own one or many real plants
 
 Recruitment Method
-
-Word of mouth
-Friends
+- Word of mouth
+- Friends
 
 Risk Related to the Study
-
-None, the study will be done with paper prototypes in a controlled environment
+- None, the study will be done with paper prototypes in a controlled environment
 
 Risk Mitigation
-
 The controlled environment will prevent any external factors from disturbing and harming the user.</pre>
+    </div>
+
+    <div class="aero">
+      <h3>Appendix B – Consent Form 1 (NR)</h3>
+<pre>REB File #1  25-08-071
+
+Consent Form — Human-Computer Interaction Course Projects
+
+Student Investigators: Camille Pouliot, camille.pouliot@mail.mcgill.ca
+Emilia Gagne, emilia.gagne@mail.mcgill.ca
+Helena Clifford, helena.clifford@mail.mcgill.ca
+
+You are being invited to participate in a study affiliated with the McGill University course “Human-Computer
+Engineering” (ECSE 424/524). Please note that we are seeking people that own one or more plants.
+
+Purpose: The overall purpose of this research is to test prototypes from paper to beta to give feedback on the
+usability of the product.
+
+What you will be asked to do: (screening, questionnaire, interview, observation, interact with paper prototype /
+digital systems)
+
+Participation is voluntary; sessions ~10 min; may be recorded; confidentiality, data retention, withdrawal, and
+contact details as listed in the document.
+
+Recording choice: I consent to being video/audio recorded for this study. NR
+
+Participant’s Name: Natalie Ruest
+Participant’s Signature: Natalie Ruest    Date: 19 Octobre 2025</pre>
+    </div>
+
+    <div class="aero">
+      <h3>Appendix C – Consent Form 2 (MG)</h3>
+<pre>REB File #2  25-08-071
+
+Consent Form — Human-Computer Interaction Course Projects
+
+Student Investigators: Camille Pouliot, camille.pouliot@mail.mcgill.ca
+Emilia Gagne, emilia.gagne@mail.mcgill.ca
+Helena Clifford, helena.clifford@mail.mcgill.ca
+
+(identical terms to Appendix B)
+
+Recording choice: I do NOT consent to being video/audio recorded for this study. MG
+
+Participant’s Name: Mathias Gagne
+Participant’s Signature: Mathias Gagne    Date: 20 octobre 2025</pre>
+    </div>
+
+    <div class="aero">
+      <h3>Appendix D – Consent Form 3 (SK)</h3>
+<pre>REB File #2  25-08-071
+
+Consent Form — Human-Computer Interaction Course Projects
+
+Student Investigators: Camille Pouliot, camille.pouliot@mail.mcgill.ca
+Emilia Gagne, emilia.gagne@mail.mcgill.ca
+Helena Clifford, helena.clifford@mail.mcgill.ca
+
+(identical terms to Appendix B)
+
+Recording choice: I do NOT consent to being video/audio recorded for this study. SK
+
+Participant’s Name: Sofija Kuzmanovic
+Participant’s Signature: Sofija Kuzmanovic    Date: 20 octobre 2025</pre>
+    </div>
+
+    <div class="aero">
+      <h3>Appendix E – Consent Form 4 (DH)</h3>
+<pre>REB File #2  25-08-071
+
+Consent Form — Human-Computer Interaction Course Projects
+
+Student Investigators: Camille Pouliot, camille.pouliot@mail.mcgill.ca
+Emilia Gagne, emilia.gagne@mail.mcgill.ca
+Helena Clifford, helena.clifford@mail.mcgill.ca
+
+(identical terms to Appendix B)
+
+Recording choice: I do NOT consent to being video/audio recorded for this study. DH
+
+Participant’s Name: Dawn Hoffer
+Participant’s Signature: Dawn Hoffer    Date: 20 octobre 2025</pre>
+    </div>
 
     <hr />
-    <p class="muted">© Calm Plant Watering Alert</p>
+    <footer>© Calm Plant Watering Alert</footer>
   </main>
 </body>
 </html>
